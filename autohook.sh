@@ -41,6 +41,7 @@ install() {
         hook_symlink="$hooks_dir/$hook_type"
         ln -s $autohook_linktarget $hook_symlink
     done
+    echo "Scripts installed into .git/hooks"
 }
 
 
@@ -75,7 +76,7 @@ main() {
             do
                 scriptname=$(basename $file)
                 echo "BEGIN $scriptname"
-                eval $file &> /dev/null
+                eval $file # &> /dev/null
                 script_exit_code=$?
                 if [[ $script_exit_code != 0 ]]
                 then
@@ -85,12 +86,11 @@ main() {
             done
             if [[ $hook_exit_code != 0 ]]
             then
-              echo "A $hook_type script yielded negative exit code $hook_exit_code"
+              echo "FAILED Script: $scriptname. exit code $hook_exit_code"
               exit $hook_exit_code
             fi
         fi
     fi
 }
-
 
 main "$@"
